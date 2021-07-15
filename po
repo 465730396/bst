@@ -1,0 +1,34 @@
+##导入宏定义
+$!define
+$!init
+
+##保存文件（宏定义）
+#save("/entity/po", ".java")
+
+##包路径（宏定义）
+#setPackageSuffix("entity.po")
+
+##自动导入包（全局变量）
+$!autoImport
+import com.mobikok.scrm.common.core.entity.po.BasePo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+
+##表注释（宏定义）
+#tableComment("表实体类")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class $!{tableInfo.name} extends BasePo {
+#foreach($column in $tableInfo.fullColumn)
+    #if(${column.comment})// ${column.comment}#end
+
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+}
