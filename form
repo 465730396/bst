@@ -1,0 +1,36 @@
+##导入宏定义
+$!define
+$!init
+$!ignoreAuditField
+
+##保存文件（宏定义）
+#save("/entity/form", "Form.java")
+##包路径（宏定义）
+#setPackageSuffix("entity.form")
+
+##自动导入包（全局变量）
+$!autoImport
+import com.mobikok.scrm.common.core.entity.form.BaseForm;
+import $!{tableInfo.savePackageName}.entity.po.$!tableInfo.name;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+
+##表注释（宏定义）
+#tableComment("表数据传输对象")
+@Data
+@ApiModel
+@EqualsAndHashCode(callSuper = true)
+public class $!{tableInfo.name}Form extends BaseForm<$!{tableInfo.name}> {
+#set($index = 0)
+
+#foreach($column in $tableInfo.fullColumn)
+    #set($index = $index + 1)
+    #if(${column.comment})@ApiModelProperty(value = "${column.comment}", position = $index)#end
+
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+
+#end
+}
