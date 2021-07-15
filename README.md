@@ -1,1 +1,2 @@
 # bst
+#eazy code template
