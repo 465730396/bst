@@ -1,0 +1,42 @@
+##导入宏定义
+$!define
+$!init
+##设置表后缀（宏定义）
+#setTableSuffix("Service")
+
+##保存文件（宏定义）
+#save("/service", "Service.java")
+
+##包路径（宏定义）
+#setPackageSuffix("service")
+
+#set($tabelVariableName = $!tool.firstLowerCase($!tableInfo.name))
+#set($tableQueryFormName = $!tool.append($!tableInfo.name, "QueryParam"))
+
+import com.alicp.jetcache.anno.CacheInvalidate;
+import com.alicp.jetcache.anno.CacheUpdate;
+import com.alicp.jetcache.anno.Cached;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import $!{tableInfo.savePackageName}.entity.param.$!{tableInfo.name}QueryParam;
+import $!{tableInfo.savePackageName}.entity.po.$!tableInfo.name;
+import $!{tableInfo.savePackageName}.entity.vo.$!{tableInfo.name}Vo;
+
+
+##表注释（宏定义）
+#tableComment("表服务接口")
+public interface $!{tableName} {
+
+    Integer add(${tableInfo.name} ${tabelVariableName});
+
+    @CacheInvalidate(name = "${tabelVariableName}:", key = "#id")
+    boolean delete(Integer id);
+
+    @CacheInvalidate(name = "${tabelVariableName}:", key = "#${tabelVariableName}.id")
+    boolean update(${tableInfo.name} ${tabelVariableName});
+
+    @Cached(name = "${tabelVariableName}:", key = "#id")
+    $!{tableInfo.name}Vo get(Integer id);
+
+    IPage<$!{tableInfo.name}Vo> query(Page page, $tableQueryFormName queryParam);
+}
