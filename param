@@ -1,0 +1,31 @@
+##导入宏定义
+$!define
+$!init
+
+##保存文件（宏定义）
+#save("/entity/param", "QueryParam.java")
+
+##包路径（宏定义）
+#setPackageSuffix("entity.param")
+
+##自动导入包（全局变量）
+$!autoImport
+import com.mobikok.scrm.common.core.entity.param.BaseParam;
+import $!{tableInfo.savePackageName}.entity.po.$!tableInfo.name;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+
+##表注释（宏定义）
+#tableComment("表数据查询对象")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class $!{tableInfo.name}QueryParam extends BaseParam<$!{tableInfo.name}> {
+#foreach($column in $tableInfo.fullColumn)
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+}
