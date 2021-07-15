@@ -1,0 +1,44 @@
+##导入宏定义
+$!define
+$!init
+
+##保存文件（宏定义）
+#save("/entity/vo", "Vo.java")
+##包路径（宏定义）
+#setPackageSuffix("entity.vo")
+
+##自动导入包（全局变量）
+$!autoImport
+import com.mobikok.scrm.common.core.entity.vo.BaseVo;
+import $!{tableInfo.savePackageName}.entity.po.$!tableInfo.name;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
+
+
+##表注释（宏定义）
+#tableComment("表数据传输对象")
+@Data
+@ApiModel
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class $!{tableInfo.name}Vo extends BaseVo<$!{tableInfo.name}> {
+
+    public $!{tableInfo.name}Vo($!{tableInfo.name} entity){
+        BeanUtils.copyProperties(entity, this);
+    }
+#set($index = 0)
+
+#foreach($column in $tableInfo.fullColumn)
+    #set($index = $index + 1)
+    #if(${column.comment})@ApiModelProperty(value = "${column.comment}", position = $index)#end
+
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+
+#end
+}
